@@ -2,7 +2,6 @@
 @using System.IO
 @using System.Globalization
 @using Microsoft.EntityFrameworkCore
-@using Microsoft.EntityFrameworkCore
 @using Employees.Data
 @inject IDbContextFactory<EmployeeDataContext> DbContextFactory
 
@@ -39,27 +38,32 @@
             var name = names[random.Next(names.Length)].Split(',');
             var address = addresses[random.Next(addresses.Length)].Split(',');
 
-            var email = $"{name[0].ToLower()}.{name[1].ToLower()}@example.com";
-            var department = "Sales"; // Beispielwert, kann angepasst werden
-            var avatar = $"https://example.com/avatars/{random.Next(1, 100)}.png"; // Beispiel-Avatar-URL
+            var birthDate = RandomBirthDate(new DateTime(1950, 1, 1), new DateTime(2006, 12, 31), random);
 
-            var employee = $"{name[0]} {name[1]}, {email}, {department}, {avatar}, {address[0]}, {address[1]}, {address[2]}";
+            var employee = $"{name[0]} {name[1]}, {birthDate:yyyy-MM-dd}, {address[0]}, {address[1]}, {address[2]}";
 
             employees.Add(employee);
             await File.AppendAllTextAsync("wwwroot/employees.log", employee + Environment.NewLine);
-            await AddEmployeeToDatabase(context, name[0], name[1], email, department, avatar, address[0], address[1], address[2]);
+            await AddEmployeeToDatabase(context, name[0], name[1], birthDate, address[0], address[1], address[2]);
         }
     }
 
-    private async Task AddEmployeeToDatabase(EmployeeDataContext context, string firstName, string lastName, string email, string department, string avatar, string street, string city, string postalCode)
+    private DateTime RandomBirthDate(DateTime startDate, DateTime endDate, Random random)
+    {
+        int range = (endDate - startDate).Days;
+        return startDate.AddDays(random.Next(range));
+    }
+
+    private async Task AddEmployeeToDatabase(EmployeeDataContext context, string firstName, string lastName, DateTime birthDate, string street, string city, string postalCode)
     {
         var employee = new Employee
             {
                 FirstName = firstName,
                 LastName = lastName,
-                Email = email,
-                Department = department,
-                Avatar = avatar,
+                BirthDate = birthDate,
+                Street = street,
+                City = city,
+                PostalCode = postalCode
             };
 
         context.Employees.Add(employee);

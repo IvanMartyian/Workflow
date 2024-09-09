@@ -26,7 +26,8 @@ namespace Employees.Data
 
             modelBuilder.Entity<Employee>()
                 .HasData(
-                // Hier kannst du Seed-Daten hinzufügen, falls gewünscht
+                    new Employee { Id = 1, FirstName = "Max", LastName = "Muster", BirthDate = new DateTime(1980, 1, 1), Street = "Musterstraße 1", City = "Musterstadt", PostalCode = "12345" },
+                    new Employee { Id = 2, FirstName = "Erika", LastName = "Mustermann", BirthDate = new DateTime(1990, 2, 2), Street = "Beispielweg 2", City = "Beispielstadt", PostalCode = "67890" }
                 );
         }
     }
