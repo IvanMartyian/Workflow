@@ -2,7 +2,9 @@
 @using Employees.Data
 @page "/"
 @inject IDbContextFactory<EmployeeDataContext> EmployeeDataContextFactory;
+@inject IJSRuntime JSRuntime;
 <PageTitle>Our Employees!</PageTitle>
+
 
 @if (ShowCreate)
 {
@@ -29,7 +31,10 @@ else
 {
     <div class="form-group row">
         <div class="offset-4 col-8">
-            <button name="submit" type="submit" class="btn btn-primary" @onclick="ShowCreateForm">Add a New Employee</button>
+            <div class="btn-group">
+                <button name="submit" type="submit" class="btn btn-primary" @onclick="ShowCreateForm">Add a New Employee</button>
+                <button name="deleteAll" type="button" class="btn btn-danger" @onclick="DeleteAllEmployees">Delete All Employees</button>
+            </div>
         </div>
     </div>
 
@@ -88,5 +93,17 @@ else
                 </tbody>
             </table>
         </div>
+    }
+}
+
+
+@code {
+    private async Task DeleteAllEmployees()
+    {
+        Console.WriteLine("DeleteAllEmployees wurde aufgerufen");
+        using var context = await EmployeeDataContextFactory.CreateDbContextAsync();
+        context.Employees.RemoveRange(OurEmployees);
+        await context.SaveChangesAsync();
+        OurEmployees.Clear();
     }
 }

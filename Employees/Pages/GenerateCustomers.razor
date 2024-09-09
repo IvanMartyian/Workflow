@@ -10,6 +10,7 @@
 <input type="number" @bind="numberOfEmployees" placeholder="Anzahl der Mitarbeiter" />
 <button @onclick="GenerateEmployeeList">Generieren</button>
 
+
 @if (employees != null)
 {
     <ul>
@@ -26,8 +27,8 @@
 
     private async Task GenerateEmployeeList()
     {
-        var names = await File.ReadAllLinesAsync("wwwroot/names.csv");
-        var addresses = await File.ReadAllLinesAsync("wwwroot/addresses.csv");
+        var names = await File.ReadAllLinesAsync("Data/names.csv");
+        var addresses = await File.ReadAllLinesAsync("Data/addresses.csv");
         var random = new Random();
         employees = new List<string>();
 
