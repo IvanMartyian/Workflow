@@ -7,6 +7,7 @@
 
 <p>Aktueller Zählerwert: @count</p>
 
+<input type="number" @bind="count">Anzahl der Kunden</input>
 <button @onclick="IncrementCount">Zähle hoch</button>
 
 @code {
@@ -18,7 +19,7 @@
         var context = DbContextFactory.CreateDbContext();
 
         List<Employee> employees = new List<Employee>();
-        for (int i = 0; i < 20; i++)
+        for (int i = 0; i < count; i++)
         {
             Employee randomEmployee = GetNewEmployee();
             context.Add<Employee>(randomEmployee);
@@ -32,6 +33,8 @@
         generatedEmployee.FirstName = GetZufallName("C:\\Users\\MartyianI\\source\\repos\\Employees-funktion\\Employees\\Data\\Firstname.txt");
         generatedEmployee.LastName = GetZufallName("C:\\Users\\MartyianI\\source\\repos\\Employees-funktion\\Employees\\Data\\Lastname.txt");
         generatedEmployee.City = "Testcity";
+        generatedEmployee.PostalCode = "1234";
+        generatedEmployee.Street = "TestStreet";
 
         return generatedEmployee;
     }
@@ -42,7 +45,6 @@
         string[] allNames = allText.Split(";");
         Random randomizer = new Random();
         int zufallsZahl = randomizer.Next(allNames.Count());
-
         return allNames[zufallsZahl];
     }
 

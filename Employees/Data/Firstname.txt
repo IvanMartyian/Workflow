@@ -1,1 +1,1 @@
-Ivan,Mykhailo,Illia
+Ivan;Mykhailo;Illia
