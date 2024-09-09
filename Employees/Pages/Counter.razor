@@ -1,0 +1,49 @@
+﻿@page "/counter"
+@using System.Globalization
+@using Microsoft.EntityFrameworkCore
+@using Employees.Data
+@inject IDbContextFactory<EmployeeDataContext> DbContextFactory
+<h3>Zähler</h3>
+
+<p>Aktueller Zählerwert: @count</p>
+
+<button @onclick="IncrementCount">Zähle hoch</button>
+
+@code {
+    private int count = 0;
+
+    private void IncrementCount()
+    {
+
+        var context = DbContextFactory.CreateDbContext();
+
+        List<Employee> employees = new List<Employee>();
+        for (int i = 0; i < 20; i++)
+        {
+            Employee randomEmployee = GetNewEmployee();
+            context.Add<Employee>(randomEmployee);
+        }
+        context.SaveChanges();
+    }
+    private Employee GetNewEmployee()
+    {
+        Employee generatedEmployee = new Employee();
+
+        generatedEmployee.FirstName = GetZufallName("C:\\Users\\MartyianI\\source\\repos\\Employees-funktion\\Employees\\Data\\Firstname.txt");
+        generatedEmployee.LastName = GetZufallName("C:\\Users\\MartyianI\\source\\repos\\Employees-funktion\\Employees\\Data\\Lastname.txt");
+        generatedEmployee.City = "Testcity";
+
+        return generatedEmployee;
+    }
+    private string GetZufallName(string dateiname)
+    {
+        string allText = File.ReadAllText(dateiname);
+
+        string[] allNames = allText.Split(";");
+        Random randomizer = new Random();
+        int zufallsZahl = randomizer.Next(allNames.Count());
+
+        return allNames[zufallsZahl];
+    }
+
+}
