@@ -3,19 +3,23 @@
 @using Microsoft.EntityFrameworkCore
 @using Employees.Data
 @inject IDbContextFactory<EmployeeDataContext> DbContextFactory
+
 <h3>Zähler</h3>
 
 <p>Aktueller Zählerwert: @count</p>
 
 <input type="number" @bind="count">Anzahl der Kunden</input>
-<button @onclick="IncrementCount">Zähle hoch</button>
+<br />
+<input type="text" @bind="folderPath" placeholder="Pfad zum Ordner eingeben">Pfad zum Ordner</input>
+<br />
+<button @onclick="IncrementCount">generieren</button>
 
 @code {
     private int count = 0;
+    private string folderPath = ""; // Variable für den Ordnerpfad
 
     private void IncrementCount()
     {
-
         var context = DbContextFactory.CreateDbContext();
 
         List<Employee> employees = new List<Employee>();
@@ -26,26 +30,28 @@
         }
         context.SaveChanges();
     }
+
     private Employee GetNewEmployee()
     {
         Employee generatedEmployee = new Employee();
 
-        generatedEmployee.FirstName = GetZufallName("C:\\Users\\MartyianI\\source\\repos\\Employees-funktion\\Employees\\Data\\Firstname.txt");
-        generatedEmployee.LastName = GetZufallName("C:\\Users\\MartyianI\\source\\repos\\Employees-funktion\\Employees\\Data\\Lastname.txt");
+        string filename = (folderPath); // Kombinieren des Ordnerpfads mit dem Dateinamen
+        generatedEmployee.FirstName = GetZufallName(filename);
+        generatedEmployee.LastName = GetZufallName(filename);
         generatedEmployee.City = "Testcity";
         generatedEmployee.PostalCode = "1234";
         generatedEmployee.Street = "TestStreet";
 
         return generatedEmployee;
     }
+
     private string GetZufallName(string dateiname)
     {
         string allText = File.ReadAllText(dateiname);
 
         string[] allNames = allText.Split(";");
         Random randomizer = new Random();
-        int zufallsZahl = randomizer.Next(allNames.Count());
+        int zufallsZahl = randomizer.Next(allNames.Length);
         return allNames[zufallsZahl];
     }
-
 }
